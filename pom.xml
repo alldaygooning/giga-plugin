@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.RogaIKopytov</groupId>
@@ -11,8 +11,6 @@
   <packaging>maven-plugin</packaging>
 
   <name>demo-plugin-eclipse Maven Plugin</name>
-
-  <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
   <prerequisites>
@@ -21,8 +19,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>21</maven.compiler.source>
-    <maven.compiler.target>21</maven.compiler.target>
+    <!-- Set compiler release to Java 21 -->
+    <java.release>21</java.release>
     <maven.version>3.3.9</maven.version>
   </properties>
 
@@ -50,7 +48,7 @@
       <artifactId>maven-compat</artifactId>
       <version>${maven.version}</version>
       <scope>test</scope>
-    </dependency> 
+    </dependency>
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
@@ -69,10 +67,18 @@
       <version>3.3.0</version>
       <scope>test</scope>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/javazoom/jlayer -->
+<dependency>
+    <groupId>javazoom</groupId>
+    <artifactId>jlayer</artifactId>
+    <version>1.0.1</version>
+</dependency>
+
   </dependencies>
 
   <build>
-    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+    <pluginManagement>
+      <!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
       <plugins>
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>
@@ -86,6 +92,10 @@
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.13.0</version>
+          <configuration>
+            <!-- Use the release flag to compile for Java 21 -->
+            <release>${java.release}</release>
+          </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-plugin-plugin</artifactId>
@@ -113,12 +123,13 @@
         </plugin>
       </plugins>
     </pluginManagement>
+
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
         <configuration>
-           <goalPrefix>maven-archetype-plugin</goalPrefix> 
+          <goalPrefix>maven-archetype-plugin</goalPrefix> 
           <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
         </configuration>
         <executions>
