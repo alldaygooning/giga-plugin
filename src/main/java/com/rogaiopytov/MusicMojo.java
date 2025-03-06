@@ -12,35 +12,21 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Execute;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 
 @Mojo(name = "music", threadSafe = true)
-@Execute(phase = LifecyclePhase.VERIFY)
+@Execute(goal = "build")
 public class MusicMojo extends AbstractMojo {
 
 	@Parameter(property = "soundFile", required = true)
 	private String soundFile;
-
-	@Component
-	private MavenProject project;
-
-	@Component
-	private MavenSession session;
-
-	@Component
-	private BuildPluginManager pluginManager;
 
 	@Override
 	public void execute() throws MojoExecutionException {
