@@ -70,11 +70,11 @@
       <scope>test</scope>
     </dependency>
 
-      <dependency>
-        <groupId>org.twdata.maven</groupId>
-        <artifactId>mojo-executor</artifactId>
-        <version>2.4.0</version>
-      </dependency>
+    <dependency>
+      <groupId>org.twdata.maven</groupId>
+      <artifactId>mojo-executor</artifactId>
+      <version>2.4.0</version>
+    </dependency>
     <!-- ASM bytecode manipulation dependencies -->
     <dependency>
       <groupId>org.ow2.asm</groupId>
@@ -94,7 +94,7 @@
       <version>1.0.1</version>
     </dependency>
   </dependencies>
-
+ 
   <build>
     <pluginManagement>
       <!-- Lock down plugin versions to avoid using Maven defaults -->
@@ -143,13 +143,11 @@
     </pluginManagement>
 
     <plugins>
-      <!-- Plugin to generate the Maven plugin descriptor -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
         <configuration>
-          <!-- Configure the goal prefix; you can change it as desired -->
-          <goalPrefix>maven-archetype-plugin</goalPrefix>
+          <goalPrefix>rik</goalPrefix>
           <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
         </configuration>
         <executions>

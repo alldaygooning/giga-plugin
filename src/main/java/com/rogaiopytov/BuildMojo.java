@@ -7,7 +7,6 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.executeMojo;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.executionEnvironment;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.goal;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.groupId;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.name;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
@@ -27,30 +26,47 @@ import org.apache.maven.project.MavenProject;
 @Execute(goal = "compile")
 public class BuildMojo extends AbstractMojo {
 
-	@Component
-	private MavenProject project;
+    @Component
+    private MavenProject project;
 
-	@Component
-	private MavenSession session;
+    @Component
+    private MavenSession session;
 
-	@Component
-	private BuildPluginManager pluginManager;
+    @Component
+    private BuildPluginManager pluginManager;
 
-	@Parameter(property = "webapp", defaultValue = "src/main/webapp")
-	private String sourceDirectory;
+	@Parameter(property = "src", defaultValue = "${project.build.sourceDirectory}")
+	private String src;
 
-	private String logPrefix = "Build Goal";
+    private String logPrefix = "Build Goal";
 
-	@Override
-	public void execute() throws MojoExecutionException {
-		getLog().info(String.format("%s: Using source directory: %s", logPrefix, sourceDirectory));
+    @Override
+    public void execute() throws MojoExecutionException {
+        getLog().info(String.format("%s: Using src directory: %s", logPrefix, src));
 
-		executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-war-plugin"), version("3.4.0")), goal("war"),
-				configuration(
-						element(name("warSourceDirectory"), sourceDirectory)
-					)
-,
-				executionEnvironment(project, session, pluginManager));
-	}
+        executeMojo(
+            plugin(
+                groupId("com.RogaIKopytov"),
+                artifactId("demo-plugin-eclipse"),
+                version("1.0")
+            ),
+            goal("compile"),
+            configuration(
+                element("src", src)
+            ),
+            executionEnvironment(project, session, pluginManager)
+        );
 
+        executeMojo(
+            plugin(
+                groupId("org.apache.maven.plugins"),
+                artifactId("maven-war-plugin"),
+                version("3.4.0")
+            ),
+            goal("war"),
+            configuration(
+            ),
+            executionEnvironment(project, session, pluginManager)
+        );
+    }
 }
