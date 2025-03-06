@@ -2,6 +2,11 @@ package com.rogaiopytov;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -11,7 +16,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.util.FileUtils;
 
 @Mojo(name = "obfuscate")
 @Execute(phase = LifecyclePhase.PROCESS_RESOURCES)
@@ -31,10 +35,29 @@ public class ObfuscateMojo extends AbstractMojo {
 		}
 
 		try {
-			FileUtils.copyDirectory(srcDir, destDir);
-			getLog().info("Directory copied successfully.");
+			this.copy(srcDir, destDir);
 		} catch (IOException e) {
-			throw new MojoExecutionException("Error copying directory", e);
+			throw new MojoExecutionException(String.format("I/O Exception occured creating %s.", destDir.toURI()));
 		}
+
+	}
+
+	private void copy(File src, File dst) throws IOException {
+		Path source = src.toPath();
+		Path destination = dst.toPath();
+		Files.walkFileTree(source, new SimpleFileVisitor<Path>() {
+
+			@Override
+			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+				Files.createDirectories(destination.resolve(source.relativize(dir).toString()));
+				return FileVisitResult.CONTINUE;
+			}
+
+			@Override
+			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+				Files.copy(file, destination.resolve(destination.relativize(file).toString()));
+				return FileVisitResult.CONTINUE;
+			}
+		});
 	}
 }
