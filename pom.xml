@@ -19,12 +19,12 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <!-- Set compiler release to Java 21 -->
     <java.release>21</java.release>
     <maven.version>3.3.9</maven.version>
   </properties>
 
   <dependencies>
+    <!-- Maven API dependencies -->
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
@@ -55,6 +55,8 @@
       <version>3.13.1</version>
       <scope>provided</scope>
     </dependency>
+
+    <!-- Plugin testing dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -67,24 +69,36 @@
       <version>3.3.0</version>
       <scope>test</scope>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/javazoom/jlayer -->
-<dependency>
-    <groupId>javazoom</groupId>
-    <artifactId>jlayer</artifactId>
-    <version>1.0.1</version>
-</dependency>
 
+    <!-- ASM bytecode manipulation dependencies -->
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm</artifactId>
+      <version>9.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-tree</artifactId>
+      <version>9.4</version>
+    </dependency>
+
+    <!-- Existing dependency if needed -->
+    <dependency>
+      <groupId>javazoom</groupId>
+      <artifactId>jlayer</artifactId>
+      <version>1.0.1</version>
+    </dependency>
+    
   </dependencies>
 
   <build>
     <pluginManagement>
-      <!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+      <!-- Lock down plugin versions to avoid using Maven defaults -->
       <plugins>
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>
           <version>3.4.0</version>
         </plugin>
-        <!-- see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_maven-plugin_packaging -->
         <plugin>
           <artifactId>maven-resources-plugin</artifactId>
           <version>3.3.1</version>
@@ -125,11 +139,13 @@
     </pluginManagement>
 
     <plugins>
+      <!-- Plugin to generate the Maven plugin descriptor -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
         <configuration>
-          <goalPrefix>maven-archetype-plugin</goalPrefix> 
+          <!-- Configure the goal prefix; you can change it as desired -->
+          <goalPrefix>maven-archetype-plugin</goalPrefix>
           <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
         </configuration>
         <executions>
@@ -183,4 +199,5 @@
       </build>
     </profile>
   </profiles>
+  
 </project>

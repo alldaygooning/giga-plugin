@@ -70,9 +70,6 @@ public class MusicMojo extends AbstractMojo {
 		}
 	}
 
-	/**
-	 * Plays a WAV file using the Java Sound API.
-	 */
 	private void playWavFile(File wavFile) throws MojoExecutionException {
 		try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(wavFile));
 				AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(bis)) {
@@ -80,7 +77,6 @@ public class MusicMojo extends AbstractMojo {
 			clip.open(audioInputStream);
 			getLog().info("Playing WAV file: " + wavFile.getAbsolutePath());
 			clip.start();
-			// Wait until playback is complete.
 			while (!clip.isRunning())
 				Thread.sleep(10);
 			while (clip.isRunning())
@@ -98,15 +94,10 @@ public class MusicMojo extends AbstractMojo {
 		}
 	}
 
-
-	/**
-	 * Plays an MP3 file using the JLayer library.
-	 */
 	private void playMp3File(File mp3File) throws MojoExecutionException {
 		try (FileInputStream fis = new FileInputStream(mp3File); BufferedInputStream bis = new BufferedInputStream(fis)) {
 			getLog().info("Playing MP3 file: " + mp3File.getAbsolutePath());
 			Player player = new Player(bis);
-			// Play in the current thread (this call blocks until playback is complete)
 			player.play();
 		} catch (JavaLayerException e) {
 			throw new MojoExecutionException("Error playing MP3 file: " + mp3File.getAbsolutePath(), e);
