@@ -44,19 +44,24 @@ public class CompileMojo extends AbstractMojo {
 	@Parameter(property = "src", defaultValue = "${project.build.sourceDirectory}", required = true)
 	private String src;
 
+	private String logPrefix = "Compile Goal";
+
+
 	@Override
 	public void execute() throws MojoExecutionException {
+		getLog().info(String.format("%s: Compile goal started", logPrefix));
+
 		Set<String> compileSourceRoots = new HashSet<>();
 		File srcDir = new File(src);
 		if (!srcDir.exists() || !srcDir.isDirectory()) {
-			throw new MojoExecutionException("The provided source directory does not exist or is not a directory: " + src);
+			throw new MojoExecutionException(String.format("%s: The provided source directory does not exist or is not a directory: %s", logPrefix, src));
 		}
 		findJavaSourceRoots(srcDir, compileSourceRoots);
 
 		if (compileSourceRoots.isEmpty()) {
-			getLog().warn("No Java source files found under directory: " + src);
+			getLog().warn(String.format("%s: No Java source files found under directory: %s", logPrefix, src));
 		} else {
-			getLog().info("Found Java source roots: " + compileSourceRoots);
+			getLog().info(String.format("%s: Found Java source roots: %s", logPrefix, compileSourceRoots));
 		}
 
 		List<Element> sourceRootElements = new ArrayList<>();
@@ -64,7 +69,7 @@ public class CompileMojo extends AbstractMojo {
 			sourceRootElements.add(element("compileSourceRoot", dir));
 		}
 
-		getLog().info("Compiling using these source roots: " + compileSourceRoots);
+		getLog().info(String.format("%s: Compiling using these source roots: %s", logPrefix, compileSourceRoots));
 
 		executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-compiler-plugin"), version("3.14.0")), goal("compile"),
 				configuration(element("compileSourceRoots", sourceRootElements.toArray(new Element[0]))),
@@ -89,7 +94,7 @@ public class CompileMojo extends AbstractMojo {
 			try {
 				roots.add(dir.getCanonicalPath());
 			} catch (Exception ex) {
-				getLog().warn("Failed to get canonical path for directory " + dir.getAbsolutePath(), ex);
+				getLog().warn(String.format("%s: Failed to get canonical path for directory %s", logPrefix,  dir.getAbsolutePath()), ex);
 				roots.add(dir.getAbsolutePath());
 			}
 		}
@@ -103,7 +108,7 @@ public class CompileMojo extends AbstractMojo {
 	private void copyMetaInfResources(String src) {
 		File sourceMetaInfDir = new File(project.getBasedir(), src + "/main/resources/META-INF");
 		if (!sourceMetaInfDir.exists() || !sourceMetaInfDir.isDirectory()) {
-			getLog().info("No META-INF resource directory found at: " + sourceMetaInfDir.getAbsolutePath());
+			getLog().info(String.format("%s: No META-INF resource directory found at: %s", logPrefix, sourceMetaInfDir.getAbsolutePath()));
 			return;
 		}
 
@@ -111,12 +116,12 @@ public class CompileMojo extends AbstractMojo {
 		File outputMetaInfDir = new File(outputDirPath, "META-INF");
 
 		getLog().info(
-				"Copying META-INF resources from " + sourceMetaInfDir.getAbsolutePath() + " to " + outputMetaInfDir.getAbsolutePath());
+				String.format("%s: Copying META-INF resources from %s", logPrefix, sourceMetaInfDir.getAbsolutePath() + " to " + outputMetaInfDir.getAbsolutePath()));
 		try {
 			FileUtils.copyDirectory(sourceMetaInfDir, outputMetaInfDir);
-			getLog().info("META-INF resources successfully copied.");
+			getLog().info(String.format("%s: META-INF resources successfully copied.", logPrefix));
 		} catch (IOException e) {
-			getLog().error("Failed to copy META-INF resources.", e);
+			getLog().error(String.format("%s: Failed to copy META-INF resources.", logPrefix), e);
 		}
 	}
 }
