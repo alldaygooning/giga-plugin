@@ -31,8 +31,6 @@ public class DocMojo extends AbstractMojo {
 	@Component
 	private BuildPluginManager pluginManager;
 
-	private final String logPrefix = "Doc Goal";
-
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 
