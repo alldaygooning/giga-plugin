@@ -11,6 +11,9 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.name;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
@@ -21,6 +24,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 
 @Mojo(name = "build", defaultPhase = LifecyclePhase.PACKAGE, threadSafe = true, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class BuildMojo extends AbstractMojo {
@@ -37,9 +41,13 @@ public class BuildMojo extends AbstractMojo {
 	@Parameter(property = "src", defaultValue = "src")
 	private String src;
 
+	@Parameter
+	private List<ManifestEntry> manifestEntries;
+
 	private final String logPrefix = "Build Goal";
 
-    @Override
+
+	@Override
     public void execute() throws MojoExecutionException {
 		this.src = String.format("%s/%s", this.project.getBasedir().toString(), this.src);
         getLog().info(String.format("%s: Using src directory: %s", logPrefix, src));
@@ -57,6 +65,26 @@ public class BuildMojo extends AbstractMojo {
             executionEnvironment(project, session, pluginManager)
         );
 
+		Element manifestConfig = null;
+		if (manifestEntries != null && !manifestEntries.isEmpty()) {
+			List<Element> entryElements = new ArrayList<>();
+			for (ManifestEntry me : manifestEntries) {
+				entryElements.add(element(name(me.getName()), me.getValue()));
+			}
+			manifestConfig = element(name("manifestEntries"), entryElements.toArray(new Element[0]));
+		}
+
+		Element archiveConfig = null;
+		if (manifestConfig != null) {
+			archiveConfig = element("archive", manifestConfig);
+		}
+
+		List<Element> configElements = new ArrayList<>();
+		configElements.add(element("warSourceDirectory", String.format("%s/main/webapp", this.src)));
+		if (archiveConfig != null) {
+			configElements.add(archiveConfig);
+		}
+
         executeMojo(
             plugin(
                 groupId("org.apache.maven.plugins"),
@@ -64,9 +92,7 @@ public class BuildMojo extends AbstractMojo {
                 version("3.4.0")
             ),
             goal("war"),
-				configuration(element(name("warSourceDirectory"),
-						String.format("%s/main/webapp", this.src))
-            ),
+				configuration(configElements.toArray(new Element[0])),
             executionEnvironment(project, session, pluginManager)
         );
     }
