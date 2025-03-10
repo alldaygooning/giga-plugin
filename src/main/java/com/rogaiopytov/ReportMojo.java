@@ -1,19 +1,5 @@
 package com.rogaiopytov;
 
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.BuildPluginManager;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.*;
-import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.util.FileUtils;
-import org.eclipse.jgit.api.AddCommand;
-import org.eclipse.jgit.api.CommitCommand;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.Status;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.lib.Repository;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -23,6 +9,25 @@ import java.nio.file.StandardCopyOption;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.BuildPluginManager;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Execute;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.FileUtils;
+import org.eclipse.jgit.api.AddCommand;
+import org.eclipse.jgit.api.CommitCommand;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.Status;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Repository;
 
 @Mojo(name = "report", defaultPhase = LifecyclePhase.TEST, threadSafe = true, requiresDependencyResolution = ResolutionScope.TEST)
 @Execute(goal = "test")
@@ -82,7 +87,7 @@ public class ReportMojo extends AbstractMojo {
 				throw new MojoExecutionException(String.format("XML source directory %s is invalid or does not exist", xmlSourceDirectory));
 			}
 
-            File[] xmlFiles = xmlSourceDirectory.toFile().listFiles((dir, name) -> name.endsWith(".xml"));
+			File[] xmlFiles = xmlSourceDirectory.toFile().listFiles(((dir, name) -> name.endsWith(".xml")));
 
 			if (xmlFiles == null || xmlFiles.length == 0) {
 				logInfoMessage("No XML files found. Skipping report commit");
