@@ -11,6 +11,7 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.name;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,6 +85,20 @@ public class BuildMojo extends AbstractMojo {
 		if (archiveConfig != null) {
 			configElements.add(archiveConfig);
 		}
+
+		List<Element> webResources = new ArrayList<Element>();
+		
+		String buildDir = project.getBuild().getDirectory();
+		File apidocsDir = new File(buildDir, "reports/apidocs");
+		if (apidocsDir.exists() && apidocsDir.isDirectory()) {
+			webResources.add(
+					element(name("resource"), 
+							element(name("directory"), apidocsDir.getAbsolutePath()),
+							element(name("targetPath"), "javadoc")));
+		}
+
+		Element webResourcesElement = element(name("webResources"), webResources.toArray(new Element[0]));
+		configElements.add(webResourcesElement);
 
         executeMojo(
             plugin(
