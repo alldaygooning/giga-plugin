@@ -7,6 +7,7 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.executeMojo;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.executionEnvironment;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.goal;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.groupId;
+import static org.twdata.maven.mojoexecutor.MojoExecutor.name;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
@@ -15,7 +16,6 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -23,7 +23,6 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
 @Mojo(name = "build", defaultPhase = LifecyclePhase.PACKAGE, threadSafe = true, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME)
-@Execute(goal = "compile")
 public class BuildMojo extends AbstractMojo {
 
     @Component
@@ -35,13 +34,14 @@ public class BuildMojo extends AbstractMojo {
     @Component
     private BuildPluginManager pluginManager;
 
-	@Parameter(property = "src", defaultValue = "${project.build.sourceDirectory}")
+	@Parameter(property = "src", defaultValue = "src")
 	private String src;
 
-    private String logPrefix = "Build Goal";
+	private final String logPrefix = "Build Goal";
 
     @Override
     public void execute() throws MojoExecutionException {
+		this.src = String.format("%s/%s", this.project.getBasedir().toString(), this.src);
         getLog().info(String.format("%s: Using src directory: %s", logPrefix, src));
 
         executeMojo(
@@ -64,7 +64,8 @@ public class BuildMojo extends AbstractMojo {
                 version("3.4.0")
             ),
             goal("war"),
-            configuration(
+				configuration(element(name("warSourceDirectory"),
+						String.format("%s/main/webapp", this.src))
             ),
             executionEnvironment(project, session, pluginManager)
         );
