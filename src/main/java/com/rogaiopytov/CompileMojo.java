@@ -32,6 +32,8 @@ import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 @Mojo(name = "compile", threadSafe = true, requiresDependencyResolution = ResolutionScope.COMPILE)
 public class CompileMojo extends AbstractMojo {
 
+	private final String logPrefix = "Compile Goal";
+
 	@Component
 	private MavenProject project;
 
@@ -41,10 +43,8 @@ public class CompileMojo extends AbstractMojo {
 	@Component
 	private BuildPluginManager pluginManager;
 
-	@Parameter(property = "src", defaultValue = "${project.build.sourceDirectory}", required = true)
+	@Parameter(property = "src", defaultValue = "${project.basedir}/src", required = true)
 	private String src;
-
-	private String logPrefix = "Compile Goal";
 
 
 	@Override
@@ -52,9 +52,10 @@ public class CompileMojo extends AbstractMojo {
 		getLog().info(String.format("%s: Compile goal started", logPrefix));
 
 		Set<String> compileSourceRoots = new HashSet<>();
-		File srcDir = new File(src);
+		File srcDir = new File(src, "main/java");
 		if (!srcDir.exists() || !srcDir.isDirectory()) {
-			throw new MojoExecutionException(String.format("%s: The provided source directory does not exist or is not a directory: %s", logPrefix, src));
+			throw new MojoExecutionException(
+					String.format("%s: The provided source directory does not exist or is not a directory: %s", logPrefix, src));
 		}
 		findJavaSourceRoots(srcDir, compileSourceRoots);
 
@@ -106,9 +107,9 @@ public class CompileMojo extends AbstractMojo {
 	}
 
 	private void copyMetaInfResources(String src) {
-		File sourceMetaInfDir = new File(project.getBasedir(), src + "/main/resources/META-INF");
-		if (!sourceMetaInfDir.exists() || !sourceMetaInfDir.isDirectory()) {
-			getLog().info(String.format("%s: No META-INF resource directory found at: %s", logPrefix, sourceMetaInfDir.getAbsolutePath()));
+		File metaInfDir = new File(src, "/main/resources/META-INF");
+		if (!metaInfDir.exists() || !metaInfDir.isDirectory()) {
+			getLog().info("No META-INF resource directory found at: " + metaInfDir.getAbsolutePath());
 			return;
 		}
 
@@ -116,10 +117,10 @@ public class CompileMojo extends AbstractMojo {
 		File outputMetaInfDir = new File(outputDirPath, "META-INF");
 
 		getLog().info(
-				String.format("%s: Copying META-INF resources from %s", logPrefix, sourceMetaInfDir.getAbsolutePath() + " to " + outputMetaInfDir.getAbsolutePath()));
+				"Copying META-INF resources from " + metaInfDir.getAbsolutePath() + " to " + outputMetaInfDir.getAbsolutePath());
 		try {
-			FileUtils.copyDirectory(sourceMetaInfDir, outputMetaInfDir);
-			getLog().info(String.format("%s: META-INF resources successfully copied.", logPrefix));
+			FileUtils.copyDirectory(metaInfDir, outputMetaInfDir);
+			getLog().info("META-INF resources successfully copied.");
 		} catch (IOException e) {
 			getLog().error(String.format("%s: Failed to copy META-INF resources.", logPrefix), e);
 		}
