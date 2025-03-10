@@ -96,6 +96,17 @@ public class BuildMojo extends AbstractMojo {
 							element(name("directory"), apidocsDir.getAbsolutePath()),
 							element(name("targetPath"), "javadoc")));
 		}
+		
+		File localizationDir = new File(this.src, "main/resources");
+        webResources.add(
+            element(name("resource"),
+                element(name("directory"), localizationDir.getAbsolutePath()),
+                element(name("targetPath"), "WEB-INF/classes"),
+                element(name("includes"),
+                    element(name("include"), "**/*.properties")
+                )
+            )
+        );
 
 		Element webResourcesElement = element(name("webResources"), webResources.toArray(new Element[0]));
 		configElements.add(webResourcesElement);
