@@ -42,6 +42,9 @@ public class BuildMojo extends AbstractMojo {
 	@Parameter(property = "src", defaultValue = "src")
 	private String src;
 
+	@Parameter(property = "finalName", defaultValue = "")
+	private String finalName;
+
 	@Parameter
 	private List<ManifestEntry> manifestEntries;
 
@@ -110,6 +113,11 @@ public class BuildMojo extends AbstractMojo {
 
 		Element webResourcesElement = element(name("webResources"), webResources.toArray(new Element[0]));
 		configElements.add(webResourcesElement);
+
+		if (finalName == null || finalName.isEmpty()) {
+			finalName = project.getBuild().getFinalName();
+		}
+		project.getBuild().setFinalName(finalName);
 
         executeMojo(
             plugin(
