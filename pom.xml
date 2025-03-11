@@ -6,11 +6,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.RogaIKopytov</groupId>
-  <artifactId>demo-plugin-eclipse</artifactId>
+  <artifactId>rik-maven-plugin</artifactId>
   <version>1.0</version>
   <packaging>maven-plugin</packaging>
 
-  <name>demo-plugin-eclipse Maven Plugin</name>
+  <name>rik-maven-plugin Maven Plugin</name>
   <url>http://www.example.com</url>
 
   <prerequisites>
@@ -152,10 +152,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
-        <configuration>
-          <goalPrefix>rik</goalPrefix>
-          <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
-        </configuration>
         <executions>
           <execution>
             <id>mojo-descriptor</id>

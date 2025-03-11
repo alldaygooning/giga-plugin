@@ -14,7 +14,7 @@
     <plugins>
       <plugin>
         <groupId>com.RogaIKopytov</groupId>
-        <artifactId>demo-plugin-eclipse</artifactId>
+        <artifactId>rik-maven-plugin</artifactId>
         <configuration>
           <!-- Specify the MyMojo parameter -->
           <outputDirectory>target/test-harness/project-to-test</outputDirectory>

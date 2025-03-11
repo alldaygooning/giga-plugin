@@ -56,7 +56,7 @@ public class ScpMojo extends AbstractMojo {
 
 	@Override
 	public void execute() throws MojoExecutionException {
-		executeMojo(plugin(groupId("com.RogaIKopytov"), artifactId("demo-plugin-eclipse"), version("1.0")), goal("build"), configuration(),
+		executeMojo(plugin(groupId("com.RogaIKopytov"), artifactId("rik-maven-plugin"), version("1.0")), goal("build"), configuration(),
 				executionEnvironment(project, session, pluginManager));
 		File warArchive = resolveWarArchive();
 		getLog().info(String.format("%s: Found WAR archive: %s", logPrefix, warArchive.getAbsolutePath()));

@@ -106,7 +106,7 @@ public class HashMojo extends AbstractMojo {
 		executeMojo(
 	            plugin(
 	                groupId("com.RogaIKopytov"),
-	                artifactId("demo-plugin-eclipse"),
+	                artifactId("rik-maven-plugin"),
 	                version("1.0")
 	            ),
 				goal("build"),
