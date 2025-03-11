@@ -86,8 +86,6 @@ public class HashMojo extends AbstractMojo {
             manifestEntries.add(manifestEntry);
         }
 
-		System.out.println(manifestEntries);
-
         List<Element> configElements = new ArrayList<>();
 		configElements.add(element("src", this.providedSrc));
 		
