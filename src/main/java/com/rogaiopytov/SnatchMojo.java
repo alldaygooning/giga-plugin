@@ -94,6 +94,9 @@ public class SnatchMojo extends AbstractMojo {
                    .setRef(originalHead.getName())
                    .call();
             }
+
+			ZipArchiver zipArchiver = new ZipArchiver();
+			zipArchiver.archiveWarFiles(project.getBuild().getDirectory());
         } catch (Exception e) {
             throw new MojoExecutionException("Error during repository reset/build execution", e);
         } finally {
